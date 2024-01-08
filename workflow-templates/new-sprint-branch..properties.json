@@ -1,0 +1,8 @@
+{
+    "name": "🚀 New Sprint Branch",
+    "description": "Create a new sprint branch.",
+    "iconName": "rocket",
+    "filePatterns": [
+        "package.json$",
+    ]
+}
