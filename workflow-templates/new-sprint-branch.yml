@@ -1,0 +1,52 @@
+name: 🚀 New Sprint Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Cycle number (example: 45)'
+        type: number
+        required: true
+      link:
+        description: 'Linear link (example: https://linear.app/resvu/team/DEV/cycle/45)'
+        required: true
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version
+        id: bump-version
+        run: |
+          VERSION=$(npm version minor --no-git-tag-version)
+          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Bump version ${{ steps.bump-version.outputs.VERSION }}
+          title: '🚀 Cycle ${{ inputs.name }}'
+          body: |
+            Sprint branch for ${{ inputs.link }}
+
+            ## ⚠️ Don't use the Merge Button ⚠️
+
+            Use the `/merge` command instead.
+
+            ## Avaliable commands
+
+            You can trigger actions by commenting on this PR:
+
+            - `/merge` will merge this PR
+            - `/deloy <env>` will deploy this PR to the specified environment, avaliable environments: `unstable`, `staging`
+
+          branch: cycle/${{ inputs.name }}
+          base: ${{ github.ref_name }}
+          labels: sprint
